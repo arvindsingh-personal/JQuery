@@ -4,8 +4,6 @@ import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
 import Typography from '@mui/material/Typography';
 import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import MenuIcon from '@mui/icons-material/Menu';
 import KeyboardDoubleArrowUpIcon from '@mui/icons-material/KeyboardDoubleArrowUp';
 import KeyboardDoubleArrowDownIcon from '@mui/icons-material/KeyboardDoubleArrowDown';
 import { Context } from './App';
@@ -16,15 +14,15 @@ import { useTheme } from '@mui/material/styles';
 import Card from '@mui/material/Card';
 import CardContent from '@mui/material/CardContent';
 import CardMedia from '@mui/material/CardMedia';
-import SkipPreviousIcon from '@mui/icons-material/SkipPrevious';
-import PlayArrowIcon from '@mui/icons-material/PlayArrow';
-import SkipNextIcon from '@mui/icons-material/SkipNext';
 import AddOutlinedIcon from '@mui/icons-material/AddOutlined';
 import RemoveOutlinedIcon from '@mui/icons-material/RemoveOutlined';
+import Data from './data';
 
 export default function CheckoutPage() {
+  let data = Data();
   const theme = useTheme();
-  let { count, total, itemArray } = React.useContext(Context);
+  let T = 0;
+  let { count, total, setTotal, itemArray, setItemArray } = React.useContext(Context);
   const [state, setState] = React.useState({
     bottom: false,
   });
@@ -38,42 +36,74 @@ export default function CheckoutPage() {
     }
     setState({ ...state, [anchor]: open });
   };
-
+  let tempArray = [...itemArray];
+  const Add = (index) => {
+    tempArray[index].quantity++;
+    setItemArray(tempArray);
+    Total();
+  }
+  const Subtract = (index) => {
+    tempArray[index].quantity--;
+    if (tempArray[index].quantity === 0) {
+      tempArray.splice(index, 1);
+    }
+    setItemArray(tempArray);
+    Total();
+  }
+  const Total = () => {
+    var sum = 0;
+    tempArray.map((item) => {
+      sum += item.price * item.quantity;
+    })
+    setTotal(sum);
+  }
+  const checkout = () => {
+    alert("You have successfully placed your order");
+    tempArray = [];
+    setItemArray(tempArray);
+    setTotal(0)
+  }
   const list = (anchor) => (
-    <Box
+    <Box justifyContent='center'
       sx={{ width: 'auto', heigth: '300px' }}
-      role="presentation"
-      onClick={toggleDrawer(anchor, false)}
-      onKeyDown={toggleDrawer(anchor, false)}
-    >
-      <Box justifyContent='space-between'
-        sx={{ display: 'flex', width: '100%',height:'70px', alignItems:'center', backgroundColor: '#D9D9D9' }}
-      >
-        <Button><KeyboardDoubleArrowDownIcon sx={{ color: '#4E4E4E' }} /> </Button>
+      role="presentation" >
+      <Box
+        sx={{ display: 'flex', width: '100%', height: '70px', alignItems: 'center', backgroundColor: '#D9D9D9' }} >
+        <Button>
+          <KeyboardDoubleArrowDownIcon sx={{ color: '#4E4E4E' }}
+            onClick={toggleDrawer(anchor, false)}
+            onKeyDown={toggleDrawer(anchor, false)}
+          />
+        </Button>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#4E4E4E' }}>Your Orders({itemArray.length})</Typography>
         <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#4E4E4E' }}>Subtotal:  ₹{total}</Typography>
-        <Button variant='contained' sx={{ backgroundColor: '#FF0066' }}>Continue</Button>
+        {itemArray.length > 0 ?
+          <Button variant='contained' sx={{ backgroundColor: '#FF0066' }} onClick={checkout}>Checkout</Button> :
+          <Button variant='contained' sx={{ backgroundColor: '#FF0066' }}
+            onClick={toggleDrawer(anchor, false)}
+            onKeyDown={toggleDrawer(anchor, false)}
+          >Continue to shop</Button>
+        }
       </Box>
-
       <Box sx={{
-        margin: '1rem auto', padding: '2rem 1%', width:'100%',
+        margin: '1rem auto', padding: '2rem 1%', width: '100%',
         display: "flex", flexDirection: 'column', justifyContent: 'center', flexWrap: "wrap"
       }}>
         {itemArray.map((item, index) => (
-          <Card sx={{ display: 'flex', width: "500px" }}>
+          <Card sx={{ display: 'flex', width: "743px", margin: '1rem auto', backgroundColor: '#FAEAF0' }}>
             <Box sx={{ display: 'flex', flexDirection: 'column' }}>
-              <CardContent sx={{ flex: '1 0 auto', width: '20rem' }}>
+              <CardContent sx={{ flex: '1 0 auto', width: '35rem' }}>
                 <Typography component="div" variant="h5">
                   {item.name}
                 </Typography>
                 <Typography variant="subtitle1" color="text.secondary" component="div">
-                  ₹{item.price}
+                  ₹{item.quantity * item.price}
                 </Typography>
               </CardContent>
               <Box sx={{ display: 'flex', alignItems: 'center', pl: 1, pb: 1 }}>
-                <AddOutlinedIcon />
+                <AddOutlinedIcon onClick={() => Add(index)} />
                 <Typography >{item.quantity}</Typography>
-                <RemoveOutlinedIcon />
+                <RemoveOutlinedIcon onClick={() => Subtract(index)} />
               </Box>
             </Box>
             <CardMedia
@@ -87,6 +117,7 @@ export default function CheckoutPage() {
       </Box>
     </Box>
   );
+
   return (
     <>
       <Box sx={{ flexGrow: 1 }}>
@@ -107,33 +138,16 @@ export default function CheckoutPage() {
             </React.Fragment>
 
             <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#4E4E4E' }}>
-              Your Orders({count})
+              Your Orders({itemArray.length})
             </Typography>
-            <Typography variant="h6" component="div" sx={{ flexGrow: 1, color: '#4E4E4E' }}>
-
+            <Typography variant="h6" component="div"
+              sx={{ flexGrow: 1, color: '#4E4E4E' }}>
               Subtotal: ₹{total}
             </Typography>
             <Button variant='contained' sx={{ backgroundColor: '#FF0066' }}>Continue</Button>
           </Toolbar>
         </AppBar>
-
       </Box>
-
-      {/* <div>
-        {['left', 'right', 'top', 'bottom'].map((anchor) => (
-          <React.Fragment key={anchor}>
-            <Button onClick={toggleDrawer(anchor, true)}>{anchor}</Button>
-            <SwipeableDrawer
-              anchor={anchor}
-              open={state[anchor]}
-              onClose={toggleDrawer(anchor, false)}
-              onOpen={toggleDrawer(anchor, true)}
-            >
-              {list(anchor)}
-            </SwipeableDrawer>
-          </React.Fragment>
-        ))}
-      </div> */}
 
     </>
   );

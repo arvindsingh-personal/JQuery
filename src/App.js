@@ -1,5 +1,3 @@
-
-import { FoodBankOutlined } from '@mui/icons-material';
 import './App.css';
 import ResponsiveAppBar from './Navbar';
 import MediaControlCard from './FoodItem';
