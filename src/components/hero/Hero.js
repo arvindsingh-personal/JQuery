@@ -15,6 +15,7 @@ const Hero = () => {
           backgroundImage: `url('images/spaceBG.jpg')`,
           backgroundColor: 'black',
           backgroundRepeat: 'no-repeat',
+          backgroundAttachment:'fixed',
           backgroundPosition: 'center',
           backgroundSize: 'cover',
           height: 600,
