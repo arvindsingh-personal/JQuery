@@ -1,0 +1,27 @@
+@import url('https://fonts.googleapis.com/css2?family=Anton&family=Bad+Script&family=Combo&family=Lobster&family=Londrina+Shadow&family=Oswald&family=Press+Start+2P&family=Roboto:wght@300&display=swap');
+
+body {
+    background-color: #6cc6ce;
+}
+.parent {
+    background-color: #f3d611;
+    display: flex;
+    justify-content: center;
+    font-family: 'Anton', sans-serif;
+    font-family: 'Bad Script', cursive;
+    padding: 0;
+    font-family: 'Londrina Shadow', cursive;
+   height: 7rem;
+}
+.parent #p1 {
+    margin-right: 1rem;
+    color: rgb(145, 4, 4);
+    font-size: 32px;
+    font-weight: bold;
+}
+.parent #p2 {
+    margin-right: 1rem;
+    color: rgb(255, 255, 255);
+    font-size: 39px;
+    font-weight: bold;
+}
